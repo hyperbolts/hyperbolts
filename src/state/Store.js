@@ -20,19 +20,6 @@ const Utilities         = require('./Utilities');
 module.exports = class {
 
     /**
-     * On construct, pass redux store to use or create
-     * a new one.
-     *
-     * @param  {object} store store
-     * @return {void}
-     */
-    constructor(store) {
-        this.store = store || Redux.createStore(
-            reducer, Redux.applyMiddleware(Thunk.default)
-        );
-    }
-
-    /**
      * Dispatch an action.
      *
      * @param  {object|func} action action
@@ -60,8 +47,17 @@ module.exports = class {
      *
      * @return {object} store
      */
-    getStore() {
-        return this.store;
+    get store() {
+
+        // If we have yet to use the redux store,
+        // create instance
+        if (this.redux === undefined) {
+            this.redux = Redux.createStore(
+                reducer, Redux.applyMiddleware(Thunk.default)
+            );
+        }
+
+        return this.redux;
     }
 
     /**
