@@ -151,7 +151,7 @@ module.exports = (sources, Component) => {
 
                 // If update times don't match, trigger state update
                 if (cache.updated !== state.updated) {
-                    this.updateState(sources);
+                    this.updateState(parsed);
                     return;
                 }
             }
