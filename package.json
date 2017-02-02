@@ -1,6 +1,6 @@
 {
   "name": "hyperbolts",
-  "desciption": "Opinionated framework for building react-based applications",
+  "description": "Opinionated framework for building react-based applications",
   "homepage": "https://hyperbolts.io",
   "version": "0.0.1",
   "license": "MIT",
