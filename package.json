@@ -1,0 +1,52 @@
+{
+  "name": "hyperbolts",
+  "desciption": "Opinionated framework for building react-based applications",
+  "homepage": "https://hyperbolts.io",
+  "version": "0.0.1",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hyperbolts/hyperbolts.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hyperbolts/hyperbolts/issues"
+  },
+  "keywords": [
+    "hyperbolts",
+    "framework",
+    "react",
+    "redux"
+  ],
+  "author": {
+    "name": "Pace IT Systems Ltd",
+    "email": "info@paceit.co.uk",
+    "url": "https://www.paceit.co.uk"
+  },
+  "files": [
+    "dist",
+    "LICENSE.md"
+  ],
+  "scripts": {
+    "build": "babel src -d dist",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-router": "^3.0.2",
+    "redux": "^3.6.0",
+    "redux-thunk": "^2.2.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.22.2",
+    "babel-preset-latest": "^6.22.0",
+    "eslint": "^3.14.1",
+    "eslint-config-hyperbolts": "^1.0.0"
+  },
+  "babel": {
+    "presets": [
+      "latest"
+    ]
+  }
+}
