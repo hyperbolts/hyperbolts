@@ -24,7 +24,7 @@ module.exports = class {
      * @return {void}
      */
     constructor() {
-        const Core = this;
+        const that = this;
 
         // Set default config
         this.config = {
@@ -35,14 +35,14 @@ module.exports = class {
 
             // Function called when router updates its
             // state in response to URL changes
-            routerUpdateCallback: function() {
+            routerUpdateCallback() {
 
                 // Trigger transition action
-                Core.store.dispatch(transition());
+                that.store.dispatch(transition());
 
                 // Unless we have been told not to,
                 // scoll to top of window
-                if (Core.config.scroll === true) {
+                if (that.config.scroll === true) {
                     window.scroll(0, 0);
                 }
 
@@ -50,7 +50,7 @@ module.exports = class {
                 // for one transition, so re-enable
                 // scrolling
                 else {
-                    Core.config.scroll = true;
+                    that.config.scroll = true;
                 }
             }
         };
@@ -62,8 +62,8 @@ module.exports = class {
      * @param  {...array} args args
      * @return {object}        component
      */
-    connect(...args) {
-        return require('./state/connect.jsx')(...args);
+    static connect(...args) {
+        return require('./state/connect')(...args); // eslint-disable-line global-require
     }
 
     /**
@@ -118,11 +118,10 @@ module.exports = class {
         }
 
         // Create element
-        const element = (
-            <Router history={history} onUpdate={this.config.routerUpdateCallback}>
-                {this.config.routes}
-            </Router>
-        );
+        const element = React.createElement(Router, {
+            onUpdate: this.config.routerUpdateCallback,
+            history
+        }, this.config.routes);
 
         // Render router
         render(element, this.config.mount);
@@ -159,7 +158,7 @@ module.exports = class {
      *
      * @param  {string} title title
      */
-    set title(title) {
+    static set title(title) {
         document.title = title;
     }
 
@@ -168,9 +167,9 @@ module.exports = class {
      *
      * @return {string} URI
      */
-    get uri() {
-        const location = window.location;
-        const path     = Utilities.sanitizeSource(location.pathname);
+    static get uri() {
+        const {location} = window;
+        const path       = Utilities.sanitizeSource(location.pathname);
 
         return path + location.search;
     }

@@ -1,4 +1,4 @@
-const Core = require('./Core.jsx');
+const Core = require('./Core');
 
 /**
  * HyperBolts ϟ (https://hyperbolts.io)

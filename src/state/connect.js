@@ -19,7 +19,7 @@ module.exports = (sources, Component) => {
     // passed a source
     if (Component === undefined) {
         Component = sources;
-        sources   = undefined;
+        sources   = undefined; // eslint-disable-line no-multi-spaces
     }
 
     // Return higher order component
@@ -49,6 +49,8 @@ module.exports = (sources, Component) => {
         // On unmount, unsubscribe from store and cleanup
         // any refresh intervals
         componentWillUnmount() {
+            let interval;
+
             Utilities.removeListeningComponent(this.uuid);
             this.unsubscribe();
 
@@ -67,21 +69,22 @@ module.exports = (sources, Component) => {
                 return;
             }
 
-            // Set instance reference and variables
-            this.instance  = instance;
+            this.instance = instance;
+
+            // Set variables
             const callback = this.handleStoreUpdate.bind(this);
-            const sources  = Utilities.getSources(this);
+            const parsed   = Utilities.getSources(this);
             const Store    = Hyper.store;
             const load     = [];
-            
+
             // Subscribe to store
             this.unsubscribe = Store.subscribe(callback);
-            this.uuid        = Utilities.setListeningComponent(this);
-            this.intervals   = [];
+            this.uuid = Utilities.setListeningComponent(this);
+            this.intervals = [];
 
             // Loop through sources
-            for (config of sources) {
-                const source = config.source;
+            for (config of parsed) {
+                const {source} = config;
 
                 // Add source to array to load
                 load.push(source);
@@ -93,9 +96,7 @@ module.exports = (sources, Component) => {
 
                 // Create refresh interval
                 this.intervals.push(
-                    setInterval(() => {
-                        Store.dispatch(fetchState(source))
-                    }, config * 1000)
+                    setInterval(() => Store.dispatch(fetchState(source)), config * 1000)
                 );
             }
 
@@ -105,14 +106,13 @@ module.exports = (sources, Component) => {
 
         // Return sources
         getSources(...args) {
-            const instance = this.instance;
-            let func;
+            const {instance} = this;
 
             // If available, use passed sources
             if (sources !== undefined) {
                 return sources;
             }
-            
+
             // Check for get sources function
             if (instance.getSources !== undefined) {
                 return instance.getSources(...args);
@@ -129,12 +129,12 @@ module.exports = (sources, Component) => {
 
         // Handle store update
         handleStoreUpdate() {
-            const sources = Utilities.getSources(this);
-            const Store   = Hyper.store;
+            const parsed = Utilities.getSources(this);
+            const Store  = Hyper.store;
             let config;
 
             // Loop and check we have the latest state from each source
-            for (config of sources) {
+            for (config of parsed) {
                 const cache = Store.getCachedState(config.source);
                 let state   = this.state || {};
 
@@ -158,19 +158,23 @@ module.exports = (sources, Component) => {
         }
 
         // Update state
-        updateState(sources) {
+        updateState(parsed) {
             const Store = Hyper.store;
-            let config, state = {};
+            let state = {};
+            let config;
 
             // Loop through parsed sources and query store
-            for (config of sources) {
+            for (config of parsed) {
                 const cache = Store.getCachedState(config.source);
 
-                // Add to initial state
-                if (config.key !== undefined) {
-                    state[config.key] = cache;
-                } else {
+                // If we have no key, use as root state
+                if (config.key === undefined) {
                     state = cache;
+                }
+
+                // Add as keyed data
+                else {
+                    state[config.key] = cache;
                 }
             }
 
@@ -184,13 +188,10 @@ module.exports = (sources, Component) => {
 
         // Render component
         render() {
-            return (
-                <Component
-                    ref={this.handleMount.bind(this)}
-                    data={this.state}
-                    {...this.props}
-                />
-            );
+            return React.createElement(Component, Object.assign({
+                ref:  this.handleMount.bind(this),
+                data: this.state
+            }, this.props));
         }
     };
 };

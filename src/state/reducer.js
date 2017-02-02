@@ -35,10 +35,10 @@ module.exports = (state = {
         case Constants.Actions.RECEIVE_STATE:
 
             // Add source, loading status and update timestamp
-            action.state.source  = action.source; // eslint-disable-line no-multi-spaces
+            action.state.source = action.source;
             action.state.updated = Date.now();
             action.state.loading = loading;
-            action.state.error   = false; // eslint-disable-line no-multi-spaces
+            action.state.error = false;
 
             // Return updated state
             return Object.assign({}, state, {
