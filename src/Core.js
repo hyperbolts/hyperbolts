@@ -63,7 +63,6 @@ module.exports = class {
      * @return {object}        component
      */
     connect(...args) {
-        (this);
         return require('./state/connect')(...args); // eslint-disable-line global-require
     }
 
@@ -161,7 +160,6 @@ module.exports = class {
      */
     set title(title) {
         document.title = title;
-        (this);
     }
 
     /**
@@ -172,8 +170,6 @@ module.exports = class {
     get uri() {
         const {location} = window;
         const path       = Utilities.sanitizeSource(location.pathname);
-
-        (this);
 
         return path + location.search;
     }
