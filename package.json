@@ -2,7 +2,7 @@
   "name": "hyperbolts",
   "description": "Opinionated framework for building react-based applications",
   "homepage": "https://hyperbolts.io",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "license": "MIT",
   "main": "dist/index.js",
   "repository": {
