@@ -96,7 +96,7 @@ module.exports = (sources, Component) => {
 
                 // Create refresh interval
                 this.intervals.push(
-                    setInterval(() => Store.dispatch(fetchState(source)), config * 1000)
+                    setInterval(() => Store.dispatch(fetchState(source)), config.refresh * 1000)
                 );
             }
 
@@ -146,7 +146,21 @@ module.exports = (sources, Component) => {
                 // If source has a key we should actually be checking an
                 // object inside of state
                 if (config.key !== undefined) {
-                    state = state[config.key] || {};
+                    const key = config.key.split('.');
+                    let chunk;
+
+                    // Loop through chunks
+                    for (chunk of key) {
+
+                        // If chunk does, reset state and break loop
+                        // to trigger state updated
+                        if (state[chunk] === undefined) {
+                            state = {};
+                            break;
+                        }
+
+                        state = state[chunk];
+                    }
                 }
 
                 // If update times don't match, trigger state update
@@ -160,30 +174,47 @@ module.exports = (sources, Component) => {
         // Update state
         updateState(parsed) {
             const Store = Hyper.store;
-            let state = {};
+            let state   = {};
             let config;
+
+            // Make sure parsed sources are ordered by key. This
+            // us make the parent key first, e.g. user before
+            // user.details
+            parsed.sort((configA, configB) => {
+                if (configA.key < configB.key) {
+                    return -1;
+                }
+
+                return configA.key > configB.key ? 1 : 0;
+            });
 
             // Loop through parsed sources and query store
             for (config of parsed) {
                 const cache = Store.getCachedState(config.source);
+                let data = state;
+                let chunk;
 
                 // If we have no key, use as root state
                 if (config.key === undefined) {
                     state = cache;
+                    continue;
                 }
 
-                // Add as keyed data
-                else {
-                    state[config.key] = cache;
+                // Split key into chunks
+                const key = config.key.split('.');
+
+                // Loop and create state
+                for (chunk of key) {
+                    data[chunk] = data[chunk] || {};
+                    data = data[chunk];
                 }
+
+                // Add data to last chunk
+                Object.assign(data, cache);
             }
 
             // Clone data and update state
-            this.setState(
-                JSON.parse(
-                    JSON.stringify(state)
-                )
-            );
+            this.setState(state);
         }
 
         // Render component

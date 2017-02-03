@@ -31,38 +31,15 @@ const getListeningComponents = () => mounted;
 const getSources = component => {
     const props    = component.props || {};
     const location = props.location || {};
-    let i;
 
-    // Retrieve sources
-    const sources = component.getSources(
-        require('..').uri, // eslint-disable-line global-require
-        props.params,
-        location.query
+    // Return parsed sources
+    return parseSources(
+        component.getSources(
+            require('..').uri, // eslint-disable-line global-require
+            props.params,
+            location.query
+        )
     );
-
-    // If sources is a string, parse into array
-    if (typeof sources === 'string') {
-        return [
-            {
-                source: sources
-            }
-        ];
-    }
-
-    // Retrieve sources length
-    const {length} = sources.length;
-
-    // Make sure all sources are objects
-    for (i = 0; i < length; i++) {
-        if (typeof sources[i] === 'string') {
-            sources[i] = {
-                source: sources[i]
-            };
-        }
-    }
-
-    // Return array of sources
-    return sources;
 };
 
 /**
@@ -80,6 +57,94 @@ const isUrl = source => {
         default:
             return false;
     }
+};
+
+/**
+ * Return parsed sources, converting any dependent
+ * sources into real sources or removing them from
+ * the array.
+ *
+ * @param  {array} sources  sources
+ * @param  {array} original original sources
+ * @return {array}          sources
+ */
+const parseSources = (sources, original = []) => {
+    const Hyper    = require('..'); // eslint-disable-line global-require
+    const Store    = Hyper.store;
+    let additional = [];
+
+    // If sources is a string or object, wrap in an array
+    if (typeof sources === 'string' || sources.source !== undefined) {
+        sources = [sources];
+    }
+
+    // Filter sources
+    sources = sources.filter((config, i) => {
+        const data = [];
+        let required;
+
+        // Convert string to source
+        if (typeof config === 'string') {
+            sources[i] = {
+                source: config
+            };
+
+            return true;
+        }
+
+        // If we aren't processing a dependant data source, include
+        // in filtered array
+        if (config.requires === undefined && config.required === undefined) {
+            return true;
+        }
+
+        // Make sure requirements are an array
+        const requires = [].concat(config.requires || config.required);
+
+        // Attempt to retrieve dependant data
+        for (required of requires) {
+            const match = sources
+                .concat(original)
+                .find(source => source.key === required); // eslint-disable-line no-loop-func
+
+            // If we don't have a source, don't include in filtered array
+            if (match === undefined) {
+                return false;
+            }
+
+            // Retrieve cache from store
+            const cache = Store.getCachedState(match.source);
+
+            // If we have no valid cache, don't include in filtered array
+            if (cache === undefined || cache.loading === true || cache.error === true) {
+                return false;
+            }
+
+            data.push(cache);
+        }
+
+        // Retrieve parsed sources
+        const parsed = parseSources(
+            (config.sources || config.source)(...data),
+            sources
+        );
+
+        // Add to parsed sources and remove from
+        // filtered array
+        additional = additional.concat(parsed);
+        return false;
+    });
+
+    // If we have no additional sources, just return
+    // base array
+    if (additional.length === 0) {
+        return sources;
+    }
+
+    // Make sure all additional sources are loaded
+    // then return merged sources
+    Store.loadState(additional.map(config => config.source));
+    return sources.concat(additional);
 };
 
 /**
@@ -180,6 +245,7 @@ module.exports = {
     getListeningComponents,
     getSources,
     isUrl,
+    parseSources,
     parseUrl,
     removeListeningComponent,
     sanitizeSource,

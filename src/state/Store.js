@@ -38,8 +38,17 @@ module.exports = class {
      * @return {object}        state
      */
     getCachedState(source) {
-        source = Utilities.sanitizeSource(source);
-        return this.store.getState().sources[source];
+        let cache = this.store.getState().sources[
+            Utilities.sanitizeSource(source)
+        ];
+
+        // Clone data
+        if (cache !== undefined) {
+            cache = JSON.parse(JSON.stringify(cache));
+        }
+
+        // Return cache
+        return cache;
     }
 
     /**
