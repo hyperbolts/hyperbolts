@@ -109,9 +109,9 @@ const parseSources = (sources, original = []) => {
                 .concat(original)
                 .find(source => { // eslint-disable-line no-loop-func
 
-                    // If key is false, we should be searching
+                    // If required is null, we should be searching
                     // for a source with no key
-                    if (required === false) {
+                    if (required === null) {
                         return source.key === undefined;
                     }
 
