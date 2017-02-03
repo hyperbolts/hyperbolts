@@ -107,7 +107,16 @@ const parseSources = (sources, original = []) => {
         for (required of requires) {
             const match = sources
                 .concat(original)
-                .find(source => source.key === required); // eslint-disable-line no-loop-func
+                .find(source => { // eslint-disable-line no-loop-func
+
+                    // If key is root, we should be searching for
+                    // data with no key
+                    if (required === 'root') {
+                        return source.key === undefined;
+                    }
+
+                    return source.key === required;
+                });
 
             // If we don't have a source, don't include in filtered array
             if (match === undefined) {
