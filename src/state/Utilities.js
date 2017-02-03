@@ -78,19 +78,21 @@ const parseSources = (sources, original = []) => {
         sources = [sources];
     }
 
-    // Filter sources
-    sources = sources.filter((config, i) => {
-        const data = [];
-        let required;
-
-        // Convert string to source
+    // Make sure all array values are source objects
+    sources = sources.map(config => {
         if (typeof config === 'string') {
-            sources[i] = {
+            return {
                 source: config
             };
-
-            return true;
         }
+
+        return config;
+    });
+
+    // Filter sources
+    sources = sources.filter(config => {
+        const data = [];
+        let required;
 
         // If we aren't processing a dependant data source, include
         // in filtered array
