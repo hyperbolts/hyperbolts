@@ -62,7 +62,7 @@ module.exports = class {
      * @param  {...array} args args
      * @return {object}        component
      */
-    connect(...args) {
+    connect(...args) { // eslint-disable-line class-methods-use-this
         return require('./state/connect')(...args); // eslint-disable-line global-require
     }
 
@@ -158,7 +158,7 @@ module.exports = class {
      *
      * @param  {string} title title
      */
-    set title(title) {
+    set title(title) { // eslint-disable-line class-methods-use-this
         document.title = title;
     }
 
@@ -167,7 +167,7 @@ module.exports = class {
      *
      * @return {string} URI
      */
-    get uri() {
+    get uri() { // eslint-disable-line class-methods-use-this
         const {location} = window;
         const path       = Utilities.sanitizeSource(location.pathname);
 
