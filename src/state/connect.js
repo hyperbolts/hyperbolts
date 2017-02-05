@@ -19,7 +19,7 @@ module.exports = (sources, Component) => {
     // passed a source
     if (Component === undefined) {
         Component = sources;
-        sources   = undefined; // eslint-disable-line no-multi-spaces
+        sources = undefined;
     }
 
     // Return higher order component

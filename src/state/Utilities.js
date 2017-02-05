@@ -35,7 +35,7 @@ const getSources = component => {
     // Return parsed sources
     return parseSources(
         component.getSources(
-            require('..').uri, // eslint-disable-line global-require
+            require('..').uri,
             props.params,
             location.query
         )
@@ -69,7 +69,7 @@ const isUrl = source => {
  * @return {array}          sources
  */
 const parseSources = (sources, original = []) => {
-    const Hyper    = require('..'); // eslint-disable-line global-require
+    const Hyper    = require('..');
     const Store    = Hyper.store;
     let additional = [];
 
@@ -107,7 +107,7 @@ const parseSources = (sources, original = []) => {
         for (required of requires) {
             const match = sources
                 .concat(original)
-                .find(source => { // eslint-disable-line no-loop-func
+                .find(source => {
 
                     // If required is null, we should be searching
                     // for a source with no key
