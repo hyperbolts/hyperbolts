@@ -171,6 +171,40 @@ module.exports = (sources, Component) => {
             }
         }
 
+        // Transform cached data
+        transformData(config, data) {
+            let transformed;
+
+            // If no transform is configured, return
+            // data as passed
+            if (config.transform === undefined) {
+                return data;
+            }
+
+            // If data is loading or has errored, skip
+            if (data.loading === true || data.error === true) {
+                return data;
+            }
+
+            // Run through transform
+            transformed = config.transform(data);
+
+            // If transformed data is an array, wrap in values object
+            if (Array.isArray(transformed) === true) {
+                transformed = {
+                    values: transformed
+                };
+            }
+
+            // Return transformed data
+            return Object.assign(transformed, {
+                source:  data.source,
+                updated: data.updated,
+                loading: false,
+                error:   false
+            });
+        }
+
         // Update state
         updateState(parsed) {
             const Store = Hyper.store;
@@ -190,31 +224,13 @@ module.exports = (sources, Component) => {
 
             // Loop through parsed sources and query store
             for (config of parsed) {
-                let cache = Store.getCachedState(config.source);
-                let data  = state;
+                let data = state;
                 let chunk;
 
-                // Run data through transform function
-                if (config.transform !== undefined) {
-                    let transformed = config.transform(cache);
-
-                    // If transformed data is an array, wrap in
-                    // values object
-                    if (Array.isArray(transformed) === true) {
-                        transformed = {
-                            values: transformed
-                        };
-                    }
-
-                    // Add required keys
-                    transformed.source = cache.source;
-                    transformed.updated = cache.updated;
-                    transformed.loading = cache.loading;
-                    transformed.error = cache.error;
-
-                    // Set as cache
-                    cache = transformed;
-                }
+                // Retrieve and transform cache
+                const cache = this.transformData(
+                    Store.getCachedState(config.source)
+                );
 
                 // If we have no key, use as root state
                 if (config.key === undefined) {
