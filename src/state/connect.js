@@ -190,9 +190,31 @@ module.exports = (sources, Component) => {
 
             // Loop through parsed sources and query store
             for (config of parsed) {
-                const cache = Store.getCachedState(config.source);
-                let data = state;
+                let cache = Store.getCachedState(config.source);
+                let data  = state;
                 let chunk;
+
+                // Run data through transform function
+                if (config.transform !== undefined) {
+                    let transformed = config.transform(cache);
+
+                    // If transformed data is an array, wrap in
+                    // values object
+                    if (Array.isArray(transformed) === true) {
+                        transformed = {
+                            values: transformed
+                        };
+                    }
+
+                    // Add required keys
+                    transformed.source = cache.source;
+                    transformed.updated = cache.updated;
+                    transformed.loading = cache.loading;
+                    transformed.error = cache.error;
+
+                    // Set as cache
+                    cache = transformed;
+                }
 
                 // If we have no key, use as root state
                 if (config.key === undefined) {
