@@ -229,6 +229,7 @@ module.exports = (sources, Component) => {
 
                 // Retrieve and transform cache
                 const cache = this.transformData(
+                    config,
                     Store.getCachedState(config.source)
                 );
 
