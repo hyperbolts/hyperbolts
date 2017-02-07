@@ -39,7 +39,7 @@ module.exports = source => dispatch => {
 
         // Check for redirection
         .then(response => {
-            ({status} = response.status);
+            ({status} = response);
             let {url} = response;
 
             // Remove from ongoing requests
