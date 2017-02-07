@@ -1,5 +1,4 @@
 const Constants = require('../Constants');
-const Utilities = require('../Utilities');
 
 /**
  * HyperBolts ϟ (https://hyperbolts.io)
@@ -11,8 +10,6 @@ const Utilities = require('../Utilities');
  * @license MIT
  */
 
-module.exports = (source, error) => ({
-    type:   Constants.Actions.ERROR_STATE,
-    source: Utilities.sanitizeSource(source),
-    error
+module.exports = () => ({
+    type: Constants.Actions.RESET_ERRORS
 });

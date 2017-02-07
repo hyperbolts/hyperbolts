@@ -12,21 +12,21 @@ module.exports = {
 
     // Actions
     Actions: {
-        ERROR_STATE:   'ERROR_STATE',
+        ADD_ERROR:     'ADD_ERROR',
         RECEIVE_STATE: 'RECEIVE_STATE',
         REQUEST_STATE: 'REQUEST_STATE',
+        REMOVE_ERROR:  'REMOVE_ERROR',
+        RESET_ERRORS:  'RESET_ERRORS',
         RESET_STORE:   'RESET_STORE',
         TRANSITION:    'TRANSITION'
     },
 
     // Exceptions
-    /* eslint max-len: 0 */
     Exceptions: {
-        ERROR_403:            'We don\'t have access to the requested data.',
-        ERROR_404:            'We couldn\'t find the data we were looking for.',
-        ERROR_500:            'The server encountered an internal error. Please try refreshing or contact us if the problem persists.',
-        ERROR_503:            'The server is temporarily unavailable. Please try refreshing or contact us if the problem persists.',
-        ERROR_JSON_MALFORMED: 'We received broken data from the server. Please try refreshing or contact us if the problem persists.',
-        ERROR_UNKNOWN:        'Something went wrong when retrieving data. Please try refreshing or contact us if the problem persists.'
+        ERROR_403: 'We don\'t have access to the requested data.',
+        ERROR_404: 'We couldn\'t find the data we were looking for.',
+
+        // eslint-disable-next-line max-len
+        ERROR_UNKNOWN: 'Something went wrong when retrieving data. Please try refreshing or contact us if the problem persists.'
     }
 };

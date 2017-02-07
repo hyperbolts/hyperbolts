@@ -20,6 +20,19 @@ const Utilities         = require('./Utilities');
 module.exports = class {
 
     /**
+     * On construct, set default config.
+     *
+     * @return {void}
+     */
+    constructor() {
+        this.config = {
+            stateRedirectCallback: url => {
+                window.location.href = url;
+            }
+        };
+    }
+
+    /**
      * Dispatch an action.
      *
      * @param  {object|func} action action
@@ -52,6 +65,25 @@ module.exports = class {
     }
 
     /**
+     * Get redirect handler.
+     *
+     * @return {func} callback
+     */
+    get stateRedirectCallback() {
+        return this.config.stateRedirectCallback;
+    }
+
+    /**
+     * Set redirect handler.
+     *
+     * @param  {func} callback callback
+     * @return {void}
+     */
+    set stateRedirectCallback(callback) {
+        this.config.stateRedirectCallback = callback;
+    }
+
+    /**
      * Return redux store instance.
      *
      * @return {object} store
@@ -78,15 +110,8 @@ module.exports = class {
      * @return {void}
      */
     loadState(sources, force) {
-        let action, source;
-
-        // Parse action
-        if (force === true) {
-            action = fetchState;
-        }
-        else {
-            action = fetchMissingState;
-        }
+        const action = force === true ? fetchState : fetchMissingState;
+        let source;
 
         // Loop through sources and retrieve
         sources = [].concat(sources);

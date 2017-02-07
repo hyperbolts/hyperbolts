@@ -1,8 +1,9 @@
 const Constants    = require('../Constants');
-const errorState   = require('./errorState');
+const Hyper        = require('../..');
+const Utilities    = require('../Utilities');
+const addError     = require('./addError');
 const receiveState = require('./receiveState');
 const requestState = require('./requestState');
-const Utilities    = require('../Utilities');
 
 /**
  * HyperBolts ϟ (https://hyperbolts.io)
@@ -19,7 +20,7 @@ const requests = {};
 
 // Export action
 module.exports = source => dispatch => {
-    let status;
+    let errorResponse, status;
 
     // Skip if request is ongoing
     source = Utilities.sanitizeSource(source);
@@ -38,7 +39,8 @@ module.exports = source => dispatch => {
 
         // Check for redirection
         .then(response => {
-            let responseUrl = response.url;
+            ({status} = response.status);
+            let {url} = response;
 
             // Remove from ongoing requests
             delete requests[source];
@@ -46,33 +48,29 @@ module.exports = source => dispatch => {
             // If response URL is an empty string, attempt to retrieve
             // from headers. This is needed for browsers polyfilling
             // fetch due to XHR limitations.
-            if (responseUrl === '') {
-                responseUrl = response.headers.get('X-Request-URL');
+            if (url === '') {
+                url = response.headers.get('X-Request-URL');
 
                 // If we haven't been able to retrieve a URL from headers
                 // we can't determine whether the source has redirected.
                 // Rather than fall over, assume request completed
                 // successfully (most likely outcome).
-                if (responseUrl === null) {
-                    ({status} = response);
+                if (url === null) {
                     return response;
                 }
             }
 
             // Remove identifier from source
-            responseUrl = responseUrl.substr(0, responseUrl.length - 6);
+            url = url.substr(0, url.length - 6);
 
             // If source and response do not match, we must have
             // been redirected. Change the window location to
             // the response location.
-            if (Utilities.parseUrl(responseUrl) !== Utilities.parseUrl(source)) {
-                window.location.href = responseUrl;
-                throw new Error('abort');
+            if (Utilities.parseUrl(url) !== Utilities.parseUrl(source)) {
+                Hyper.store.stateRedirectCallback(url, response);
+                throw new Error('redirect');
             }
 
-            // Store status code incase we need it when catching
-            // errors then return
-            ({status} = response.status);
             return response;
         })
 
@@ -91,6 +89,13 @@ module.exports = source => dispatch => {
                 };
             }
 
+            // If status is not 200, store returned error data
+            // and trigger exception
+            if (status !== 200) {
+                errorResponse = state;
+                throw new Error('invalid');
+            }
+
             // Pass to store
             dispatch(receiveState(source, state));
         })
@@ -99,23 +104,25 @@ module.exports = source => dispatch => {
         .catch(err => {
             let error = Constants.Exceptions.ERROR_UNKNOWN;
 
-            // Skip if we have received an abort message this
-            // is actually a valid response
-            if (err.message === 'abort') {
+            // If we are processing a redirect, this is
+            // expected and not an error
+            if (err.message === 'redirect') {
                 return;
             }
 
+            // If status is not 200, attempt to find exact error
+            if (status !== 200) {
+                if (Constants.Exceptions[`ERROR_${status}`] !== undefined) {
+                    error = Constants.Exceptions[`ERROR_${status}`];
+                }
+            }
+
             // Handle malformed JSON
-            if (err.message.indexOf('JSON') !== -1) {
+            else if (err.message.indexOf('JSON') !== -1) {
                 error = Constants.Exceptions.ERROR_JSON_MALFORMED;
             }
 
-            // Handle error codes
-            else if (Constants.Exceptions[`ERROR_${status}`] !== undefined) {
-                error = Constants.Exceptions[`ERROR_${status}`];
-            }
-
             // Pass error to store
-            return dispatch(errorState(source, error));
+            return dispatch(addError(source, error, status, errorResponse));
         });
 };
