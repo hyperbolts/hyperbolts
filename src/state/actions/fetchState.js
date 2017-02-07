@@ -117,11 +117,6 @@ module.exports = source => dispatch => {
                 }
             }
 
-            // Handle malformed JSON
-            else if (err.message.indexOf('JSON') !== -1) {
-                error = Constants.Exceptions.ERROR_JSON_MALFORMED;
-            }
-
             // Pass error to store
             return dispatch(addError(source, error, status, errorResponse));
         });
