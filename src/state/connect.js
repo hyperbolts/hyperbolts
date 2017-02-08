@@ -215,7 +215,7 @@ module.exports = (sources, Component) => {
         updateState(parsed) {
             const Store = Hyper.store;
             let state   = {};
-            let config, getData;
+            let config;
 
             // Make sure parsed sources are ordered by key. This
             // us make the parent key first, e.g. user before
@@ -230,8 +230,8 @@ module.exports = (sources, Component) => {
 
             // Create get data function, used by the transform
             // function to retrieve data for another source.
-            getData = (key) => {
-                const config = parsed.find(source => {
+            const getData = key => {
+                const match = parsed.find(source => {
 
                     // If key is null, we should be searching
                     // for a source with no key
@@ -244,14 +244,14 @@ module.exports = (sources, Component) => {
 
                 // If we haven't been able to find source,
                 // return blank object
-                if (config === undefined) {
+                if (match === undefined) {
                     return {};
                 }
 
                 // Retrieve, transform and return data
                 return this.transformData(
-                    config,
-                    Store.getCachedState(config.source) || {},
+                    match,
+                    Store.getCachedState(match.source) || {},
                     getData
                 );
             };
