@@ -37,7 +37,8 @@ const getSources = component => {
         component.getSources(
             require('..').uri,
             props.params,
-            location.query
+            location.query,
+            component.instance
         )
     );
 };

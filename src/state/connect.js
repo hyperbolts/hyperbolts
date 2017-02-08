@@ -110,6 +110,12 @@ module.exports = (sources, Component) => {
 
             // If available, use passed sources
             if (sources !== undefined) {
+
+                // If sources is a function, return result
+                if (typeof sources === 'function') {
+                    return sources(...args);
+                }
+
                 return sources;
             }
 
@@ -172,7 +178,7 @@ module.exports = (sources, Component) => {
         }
 
         // Transform cached data
-        transformData(config, data) {
+        transformData(config, data, getData) {
             let transformed;
 
             // If no transform is configured, return
@@ -187,7 +193,7 @@ module.exports = (sources, Component) => {
             }
 
             // Run through transform
-            transformed = config.transform(data);
+            transformed = config.transform(data, getData, this.instance);
 
             // If transformed data is an array, wrap in values object
             if (Array.isArray(transformed) === true) {
@@ -209,7 +215,7 @@ module.exports = (sources, Component) => {
         updateState(parsed) {
             const Store = Hyper.store;
             let state   = {};
-            let config;
+            let config, getData;
 
             // Make sure parsed sources are ordered by key. This
             // us make the parent key first, e.g. user before
@@ -222,6 +228,34 @@ module.exports = (sources, Component) => {
                 return configA.key > configB.key ? 1 : 0;
             });
 
+            // Create get data function, used by the transform
+            // function to retrieve data for another source.
+            getData = (key) => {
+                const config = parsed.find(source => {
+
+                    // If key is null, we should be searching
+                    // for a source with no key
+                    if (key === null) {
+                        return source.key === undefined;
+                    }
+
+                    return source.key === key;
+                });
+
+                // If we haven't been able to find source,
+                // return blank object
+                if (config === undefined) {
+                    return {};
+                }
+
+                // Retrieve, transform and return data
+                return this.transformData(
+                    config,
+                    Store.getCachedState(config.source) || {},
+                    getData
+                );
+            };
+
             // Loop through parsed sources and query store
             for (config of parsed) {
                 let data = state;
@@ -230,7 +264,8 @@ module.exports = (sources, Component) => {
                 // Retrieve and transform cache
                 const cache = this.transformData(
                     config,
-                    Store.getCachedState(config.source)
+                    Store.getCachedState(config.source) || {},
+                    getData
                 );
 
                 // If we have no key, use as root state
