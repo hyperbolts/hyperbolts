@@ -20,7 +20,7 @@ module.exports = (state = {
     switch (action.type) {
 
         // Request state
-        case Constants.Actions.REQUEST_STATE:
+        case Constants.Actions.REQUEST_STATE: {
             loading = true;
 
             // Check for existing cache
@@ -30,12 +30,18 @@ module.exports = (state = {
             // to keep this intact, otherwise components will
             // temporarily blank while data is being refreshed
             if (cache !== undefined) {
+
+                // Process array
                 if (Array.isArray(cache.state) === true) {
                     action.state = action.state.splice();
-                } else {
+                }
+
+                // Process object
+                else {
                     action.state = Object.assign({}, cache.state);
                 }
             }
+        }
 
         // Receive state
         case Constants.Actions.RECEIVE_STATE:
@@ -46,9 +52,9 @@ module.exports = (state = {
                 state:   action.state || [],
                 source:  action.source,
                 updated: Date.now(),
-                loading: loading,
-                error:   false
-            }
+                error:   false,
+                loading
+            };
 
             // Return updated state
             return Object.assign({}, state, {
