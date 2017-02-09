@@ -86,7 +86,7 @@ module.exports = (sources, Component) => {
             return this.transformData(
                 match,
                 Store.getCachedState(match.source) || {},
-                key => this.getData(config, key)
+                source => this.getData(config, source)
             );
         }
 

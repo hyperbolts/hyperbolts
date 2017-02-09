@@ -138,9 +138,9 @@ const parseSources = (component, sources, original = []) => {
             if (match.transform !== undefined) {
                 cache = match.transform(
                     cache,
-                    (key) => component.getData(sources.concat(original), key),
+                    key => component.getData(sources.concat(original), key),
                     component.instance
-                )
+                );
             }
 
             data.push(cache);
