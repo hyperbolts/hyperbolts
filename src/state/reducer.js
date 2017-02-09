@@ -21,10 +21,7 @@ module.exports = (state = {
 
         // Request state
         case Constants.Actions.REQUEST_STATE: {
-            loading = true;
-
-            // Check for existing cache
-            const cache = state.sources[action.source] || {};
+            const cache = state.sources[action.source];
 
             // If we already have state for this source we need
             // to keep this intact, otherwise components will
@@ -41,14 +38,17 @@ module.exports = (state = {
                     action.state = Object.assign({}, cache.state);
                 }
             }
+
+            // Set loading status
+            loading = true;
         }
 
         // Receive state
-        case Constants.Actions.RECEIVE_STATE:
+        case Constants.Actions.RECEIVE_STATE: {
 
             // Nest state in a new object with source,
             // loading status and update timestamp
-            action.state = {
+            const data = {
                 state:   action.state || [],
                 source:  action.source,
                 updated: Date.now(),
@@ -63,9 +63,10 @@ module.exports = (state = {
                 // copy of the source object otherwise anything
                 // referencing it will be updated.
                 sources: Object.assign({}, state.sources, {
-                    [action.source]: action.state
+                    [action.source]: data
                 })
             });
+        }
 
         // Error state
         case Constants.Actions.ADD_ERROR: {
