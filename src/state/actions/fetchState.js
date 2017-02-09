@@ -80,15 +80,6 @@ module.exports = source => dispatch => {
         // Check data then pass to store
         .then(state => {
 
-            // If state is an array, wrap in
-            // an object so data stays loopable
-            // after store adds additional keys
-            if (Array.isArray(state) === true) {
-                state = {
-                    values: state
-                };
-            }
-
             // If status is not 200, store returned error data
             // and trigger exception
             if (status !== 200) {
@@ -97,7 +88,9 @@ module.exports = source => dispatch => {
             }
 
             // Pass to store
-            dispatch(receiveState(source, state));
+            dispatch(receiveState(source, {
+                state
+            }));
         })
 
         // Catch any errors
