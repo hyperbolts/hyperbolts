@@ -212,7 +212,6 @@ module.exports = (sources, Component) => {
 
         // Transform cached data
         transformData(config, data, getData) {
-            let transformed;
 
             // If no transform is configured, return
             // data as passed
@@ -225,23 +224,9 @@ module.exports = (sources, Component) => {
                 return data;
             }
 
-            // Run through transform
-            transformed = config.transform(data, getData, this.instance);
-
-            // If transformed data is an array, wrap in values object
-            if (Array.isArray(transformed) === true) {
-                transformed = {
-                    values: transformed
-                };
-            }
-
-            // Return transformed data
-            return Object.assign(transformed, {
-                source:  data.source,
-                updated: data.updated,
-                loading: false,
-                error:   false
-            });
+            // Run through transform and return
+            data.state = config.transform(data, getData, this.instance);
+            return data;
         }
 
         // Update state
