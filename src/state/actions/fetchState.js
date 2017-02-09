@@ -88,9 +88,7 @@ module.exports = source => dispatch => {
             }
 
             // Pass to store
-            dispatch(receiveState(source, {
-                state
-            }));
+            dispatch(receiveState(source, state));
         })
 
         // Catch any errors

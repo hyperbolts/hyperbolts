@@ -14,8 +14,6 @@ module.exports = (state = {
     sources: {},
     errors:  []
 }, action) => {
-
-    // Set default loading flag
     let loading = false;
 
     // Handle action type
@@ -25,20 +23,32 @@ module.exports = (state = {
         case Constants.Actions.REQUEST_STATE:
             loading = true;
 
+            // Check for existing cache
+            const cache = state.sources[action.source] || {};
+
             // If we already have state for this source we need
             // to keep this intact, otherwise components will
             // temporarily blank while data is being refreshed
-            action.state = state.sources[action.source] || {};
-            action.state = Object.assign({}, action.state);
+            if (cache !== undefined) {
+                if (Array.isArray(cache.state) === true) {
+                    action.state = action.state.splice();
+                } else {
+                    action.state = Object.assign({}, cache.state);
+                }
+            }
 
         // Receive state
         case Constants.Actions.RECEIVE_STATE:
 
-            // Add source, loading status and update timestamp
-            action.state.source = action.source;
-            action.state.updated = Date.now();
-            action.state.loading = loading;
-            action.state.error = false;
+            // Nest state in a new object with source,
+            // loading status and update timestamp
+            action.state = {
+                state:   action.state || [],
+                source:  action.source,
+                updated: Date.now(),
+                loading: loading,
+                error:   false
+            }
 
             // Return updated state
             return Object.assign({}, state, {
