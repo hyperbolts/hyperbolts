@@ -60,6 +60,36 @@ module.exports = (sources, Component) => {
             }
         }
 
+        // Get data for passed source key
+        getData(config, key) {
+            const Store = Hyper.store;
+
+            // Find source
+            const match = config.find(source => {
+
+                // If key is null, we should be searching
+                // for a source with no key
+                if (key === null) {
+                    return source.key === undefined;
+                }
+
+                return source.key === key;
+            });
+
+            // If we haven't been able to find source,
+            // return blank object
+            if (match === undefined) {
+                return {};
+            }
+
+            // Retrieve, transform and return data
+            return this.transformData(
+                match,
+                Store.getCachedState(match.source) || {},
+                key => this.getData(config, key)
+            );
+        }
+
         // Handle mount callback of main component
         handleMount(instance) {
             let config;
@@ -96,7 +126,10 @@ module.exports = (sources, Component) => {
 
                 // Create refresh interval
                 this.intervals.push(
-                    setInterval(() => Store.dispatch(fetchState(source)), config.refresh * 1000)
+                    setInterval(
+                        () => Store.dispatch(fetchState(source)),
+                        config.refresh * 1000
+                    )
                 );
             }
 
@@ -228,34 +261,6 @@ module.exports = (sources, Component) => {
                 return configA.key > configB.key ? 1 : 0;
             });
 
-            // Create get data function, used by the transform
-            // function to retrieve data for another source.
-            const getData = key => {
-                const match = parsed.find(source => {
-
-                    // If key is null, we should be searching
-                    // for a source with no key
-                    if (key === null) {
-                        return source.key === undefined;
-                    }
-
-                    return source.key === key;
-                });
-
-                // If we haven't been able to find source,
-                // return blank object
-                if (match === undefined) {
-                    return {};
-                }
-
-                // Retrieve, transform and return data
-                return this.transformData(
-                    match,
-                    Store.getCachedState(match.source) || {},
-                    getData
-                );
-            };
-
             // Loop through parsed sources and query store
             for (config of parsed) {
                 let data = state;
@@ -265,7 +270,7 @@ module.exports = (sources, Component) => {
                 const cache = this.transformData(
                     config,
                     Store.getCachedState(config.source) || {},
-                    getData
+                    key => this.getData(parsed, key)
                 );
 
                 // If we have no key, use as root state

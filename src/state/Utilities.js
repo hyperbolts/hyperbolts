@@ -34,6 +34,7 @@ const getSources = component => {
 
     // Return parsed sources
     return parseSources(
+        component,
         component.getSources(
             require('..').uri,
             props.params,
@@ -65,11 +66,12 @@ const isUrl = source => {
  * sources into real sources or removing them from
  * the array.
  *
- * @param  {array} sources  sources
- * @param  {array} original original sources
- * @return {array}          sources
+ * @param  {object} component component
+ * @param  {array}  sources   sources
+ * @param  {array}  original  original sources
+ * @return {array}            sources
  */
-const parseSources = (sources, original = []) => {
+const parseSources = (component, sources, original = []) => {
     const Hyper    = require('..');
     const Store    = Hyper.store;
     let additional = [];
@@ -91,7 +93,7 @@ const parseSources = (sources, original = []) => {
     });
 
     // Filter sources
-    sources = sources.filter(config => {
+    const filtered = sources.filter(config => {
         const data = [];
         let required;
 
@@ -125,11 +127,20 @@ const parseSources = (sources, original = []) => {
             }
 
             // Retrieve cache from store
-            const cache = Store.getCachedState(match.source);
+            let cache = Store.getCachedState(match.source);
 
             // If we have no valid cache, don't include in filtered array
             if (cache === undefined || cache.loading === true || cache.error === true) {
                 return false;
+            }
+
+            // Transform data
+            if (match.transform !== undefined) {
+                cache = match.transform(
+                    cache,
+                    (key) => component.getData(sources.concat(original), key),
+                    component.instance
+                )
             }
 
             data.push(cache);
@@ -137,7 +148,8 @@ const parseSources = (sources, original = []) => {
 
         // Retrieve parsed sources
         const parsed = parseSources(
-            (config.sources || config.source)(...data),
+            component,
+            (config.sources || config.source)(...data, component.instance),
             sources
         );
 
@@ -150,13 +162,13 @@ const parseSources = (sources, original = []) => {
     // If we have no additional sources, just return
     // base array
     if (additional.length === 0) {
-        return sources;
+        return filtered;
     }
 
     // Make sure all additional sources are loaded
     // then return merged sources
     Store.loadState(additional.map(config => config.source));
-    return sources.concat(additional);
+    return filtered.concat(additional);
 };
 
 /**

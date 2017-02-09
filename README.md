@@ -1,13 +1,13 @@
 # HyperBolts
-**Part of the [HyperBolts](https://hyperbolts.io) family, developed by [Pace IT](https://www.paceit.co.uk). Contact us for bespoke development, consultancy and commercial support options.**
-
-**Looking for a new role working with cutting edge tools and technologies? [We're hiring!](https://www.paceit.co.uk/contact/developer-jobs)**
+Part of the [HyperBolts](https://hyperbolts.io) family, developed by [Pace IT](https://www.paceit.co.uk). Contact us for bespoke development and commercial support options.
 
 ## Summary
-Pre-release, details coming soon.
+Pre-release, full readme coming soon.
 
-## Change Log
-This project adheres to [Semantic Versioning](http://semver.org/). Every release, along with the migration instructions, is documented on the Github [Releases](https://github.com/hyperbolts/hyperbolts/releases) page.
+## Reference
+- [Connect()](docs/connect.md)
+- [Source definitions](docs/sources.md)
+- [Rendering data](docs/rendering.md)
 
 ## License
 The MIT License (MIT)
