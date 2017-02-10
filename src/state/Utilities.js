@@ -31,17 +31,63 @@ const getListeningComponents = () => mounted;
 const getSources = component => {
     const props    = component.props || {};
     const location = props.location || {};
+    const params   = props.params || {};
+    const query    = location.query || {};
 
     // Return parsed sources
-    return parseSources(
+    const sources = parseSources(
         component,
         component.getSources(
             require('..').uri,
-            props.params,
-            location.query,
+            params,
+            query,
             component.instance
         )
     );
+
+    // Loop through sources, replacing params
+    // and adding query string if configured
+    return sources.map(config => {
+        let key;
+
+        // Replace params in source
+        for (key in params) {
+
+            // Skip if prototyped property
+            if (Object.prototype.hasOwnProperty.call(params, key) === false) {
+                continue;
+            }
+
+            // Replace param
+            config.source = config.source.replace(`:${key}`, params[key]);
+        }
+
+        // Add query string
+        if (config.query === true) {
+            const queries = [];
+
+            // Loop through queries
+            for (key in query) {
+
+                // Skip if prototyped property
+                if (Object.prototype.hasOwnProperty.call(query, key) === false) {
+                    continue;
+                }
+
+                // Add to queries array
+                queries.push(`${key}=${query[key]}`);
+            }
+
+            // If we have some queries, add to source
+            if (queries.length !== 0) {
+                config.source += config.source.indexOf('?') === -1 ? '?' : '&';
+                config.source += queries.join('&');
+            }
+        }
+
+        // Return config
+        return config;
+    });
 };
 
 /**
