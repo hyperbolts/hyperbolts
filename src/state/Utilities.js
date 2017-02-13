@@ -185,7 +185,7 @@ const parseSources = (component, sources, original = []) => {
             if (match.transform !== undefined) {
                 cache.state = match.transform(
                     cache.state,
-                    key => component.getData(sources.concat(original), key),
+                    key => component.getData(sources.concat(original, additional), key),
                     component.props,
                     component.instance
                 );
@@ -198,7 +198,7 @@ const parseSources = (component, sources, original = []) => {
         const parsed = parseSources(
             component,
             (config.sources || config.source)(...data, component.instance),
-            sources
+            sources.concat(original, additional)
         );
 
         // Add to parsed sources and remove from
