@@ -219,7 +219,12 @@ module.exports = (sources, Component) => {
                 return data;
             }
 
-            // If data is loading or has errored, skip
+            // Skip if we have no data
+            if (data.state === undefined) {
+                return data;
+            }
+
+            // Skip if data is loading or has errored
             if (data.loading === true || data.error === true) {
                 return data;
             }
