@@ -225,7 +225,7 @@ module.exports = (sources, Component) => {
             }
 
             // Run through transform and return
-            data.state = config.transform(data.state, getData, this.instance);
+            data.state = config.transform(data.state, getData, this.props, this.instance);
             return data;
         }
 

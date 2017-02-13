@@ -184,8 +184,9 @@ const parseSources = (component, sources, original = []) => {
             // Transform data
             if (match.transform !== undefined) {
                 cache = match.transform(
-                    cache,
+                    cache.state,
                     key => component.getData(sources.concat(original), key),
+                    this.props,
                     component.instance
                 );
             }
@@ -275,6 +276,7 @@ const sanitizeSource = source => {
             .join('&');
 
         source = source.substr(0, index);
+        query = `?${query}`;
     }
 
     // To deduplicate slashes we first need to work
