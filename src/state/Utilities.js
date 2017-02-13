@@ -186,7 +186,7 @@ const parseSources = (component, sources, original = []) => {
                 cache = match.transform(
                     cache.state,
                     key => component.getData(sources.concat(original), key),
-                    this.props,
+                    component.props,
                     component.instance
                 );
             }
