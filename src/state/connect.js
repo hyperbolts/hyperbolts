@@ -1,5 +1,4 @@
 const fetchState = require('./actions/fetchState');
-const Hyper      = require('..');
 const React      = require('react');
 const Utilities  = require('./Utilities');
 
@@ -14,6 +13,7 @@ const Utilities  = require('./Utilities');
  */
 
 module.exports = (sources, Component) => {
+    const Hyper = require('..');
 
     // If component is blank, assume we havn't
     // passed a source
@@ -23,7 +23,7 @@ module.exports = (sources, Component) => {
     }
 
     // Return higher order component
-    return class extends React.Component {
+    return class Connect extends React.Component {
 
         // Before component mounts, trigger any static sources.
         // This allows us to skip the extra blank render
@@ -225,7 +225,7 @@ module.exports = (sources, Component) => {
             }
 
             // Run through transform and return
-            data.state = config.transform(data.state, getData, this.instance);
+            data.state = config.transform(data.state, getData, this.props, this.instance);
             return data;
         }
 

@@ -26,9 +26,8 @@ module.exports = class {
      */
     constructor() {
         this.config = {
-            stateRedirectCallback: url => {
-                window.location.href = url;
-            }
+            reducers:              [reducer],
+            stateRedirectCallback: url => window.location.href = url
         };
     }
 
@@ -94,7 +93,22 @@ module.exports = class {
         // create instance
         if (this.redux === undefined) {
             this.redux = Redux.createStore(
-                reducer, Redux.applyMiddleware(Thunk.default)
+
+                // Run through reducers
+                (state, action) => {
+                    let func;
+
+                    // Loop through registered reducers
+                    for (func of this.config.reducers) {
+                        state = func(state, action);
+                    }
+
+                    // Return processed state
+                    return state;
+                },
+
+                // Apply middleware
+                Redux.applyMiddleware(Thunk.default)
             );
         }
 
@@ -118,6 +132,17 @@ module.exports = class {
         for (source of sources) {
             this.store.dispatch(action(source));
         }
+    }
+
+    /**
+     * Register additional reducers to use when processing
+     * a state update.
+     *
+     * @param  {...func} reducers reducers
+     * @return {void}
+     */
+    registerReducers(...reducers) {
+        this.config.reducers.push(...reducers);
     }
 
     /**

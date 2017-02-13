@@ -1,10 +1,11 @@
-const history         = require('react-router/lib/browserHistory');
-const React           = require('react');
-const {render}        = require('react-dom');
-const Router          = require('react-router/lib/Router');
-const Store           = require('./state/Store');
-const transition      = require('./state/actions/transition');
-const Utilities       = require('./state/Utilities');
+const connect    = require('./state/connect');
+const history    = require('react-router/lib/browserHistory');
+const React      = require('react');
+const {render}   = require('react-dom');
+const Router     = require('react-router/lib/Router');
+const Store      = require('./state/Store');
+const transition = require('./state/actions/transition');
+const Utilities  = require('./state/Utilities');
 
 /**
  * HyperBolts ϟ (https://hyperbolts.io)
@@ -16,7 +17,7 @@ const Utilities       = require('./state/Utilities');
  * @license MIT
  */
 
-module.exports = class {
+module.exports = class Core {
 
     /**
      * On constructor, set default config.
@@ -28,16 +29,11 @@ module.exports = class {
 
         // Set default config
         this.config = {
-            mount:  undefined,
-            routes: undefined,
             scroll: true,
-            store:  undefined,
 
             // Function called when router updates its
             // state in response to URL changes
             routerUpdateCallback() {
-
-                // Trigger transition action
                 that.store.dispatch(transition());
 
                 // Unless we have been told not to,
@@ -63,7 +59,7 @@ module.exports = class {
      * @return {object}        component
      */
     connect(...args) {
-        return require('./state/connect')(...args);
+        return connect(...args);
     }
 
     /**
@@ -73,6 +69,52 @@ module.exports = class {
      */
     disableScroll() {
         this.config.scroll = false;
+    }
+
+    /**
+     * Register one or more mixins, extending the
+     * current instance with prototyped properties.
+     * Note this allows for a multi-inheritance pattern,
+     * rather than the usual class extends syntax.
+     *
+     * @param  {...object} mixins mixins
+     * @return {void}
+     */
+    register(...mixins) {
+        let mixin;
+
+        // Loop through mixins and merge into core
+        for (mixin of mixins) {
+            let obj;
+
+            // Loop through object and prototypes
+            for (obj of [mixin, mixin.prototype]) {
+                const skip  = ['bootstrap', 'constructor', 'length' , 'name', 'prototype'];
+                const keys  = Reflect.ownKeys(obj);
+                let key;
+
+                // Run bootstrap method
+                if (obj.bootstrap !== undefined) {
+                    obj.bootstrap.call(this);
+                }
+
+                // Loop through keys
+                for (key of keys) {
+
+                    // Skip blacklisted keys
+                    if (skip.indexOf(key) !== -1) {
+                        continue;
+                    }
+
+                    // Merge into target
+                    Object.defineProperty(
+                        Core.prototype,
+                        key,
+                        Object.getOwnPropertyDescriptor(obj, key)
+                    );
+                }
+            }
+        }
     }
 
     /**
@@ -133,9 +175,6 @@ module.exports = class {
      * @return {object} store
      */
     get store() {
-
-        // If store is not set, create default
-        // instance
         if (this.config.store === undefined) {
             this.config.store = new Store();
         }

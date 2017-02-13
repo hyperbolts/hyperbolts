@@ -20,80 +20,57 @@ module.exports = (state = {
     switch (action.type) {
 
         // Request state
-        case Constants.Actions.REQUEST_STATE: {
-            const cache = state.sources[action.source];
-
-            // If we already have state for this source we need
-            // to keep this intact, otherwise components will
-            // temporarily blank while data is being refreshed
-            if (cache !== undefined) {
-
-                // Process array
-                if (Array.isArray(cache.state) === true) {
-                    action.state = action.state.splice();
-                }
-
-                // Process object
-                else {
-                    action.state = Object.assign({}, cache.state);
-                }
-            }
-
-            // Set loading status
+        case Constants.Actions.REQUEST_STATE:
+            action.state = state.sources[action.source] || {};
+            action.state = action.state.state || [];
             loading = true;
-        }
 
         // Receive state
-        case Constants.Actions.RECEIVE_STATE: {
-
-            // Nest state in a new object with source,
-            // loading status and update timestamp
-            const data = {
-                state:   action.state || [],
-                source:  action.source,
-                updated: Date.now(),
-                error:   false,
-                loading
-            };
-
-            // Return updated state
+        case Constants.Actions.RECEIVE_STATE:
             return Object.assign({}, state, {
 
                 // Merge into existing sources. We need to use a new
                 // copy of the source object otherwise anything
                 // referencing it will be updated.
                 sources: Object.assign({}, state.sources, {
-                    [action.source]: data
+                    [action.source]: {
+                        state:   action.state,
+                        source:  action.source,
+                        updated: Date.now(),
+                        error:   false,
+                        loading
+                    }
                 })
             });
-        }
 
         // Error state
         case Constants.Actions.ADD_ERROR: {
-            const source  = state.sources[action.source];
-            const errors  = state.errors.slice();
-            const sources = {};
+            let sources  = state.sources;
+            const source = sources[action.source];
 
-            // If source exists, set error flag to true
+            // If source exists, rebuild sources
+            // with error flag set to true
             if (source !== undefined) {
-                sources[action.source] = Object.assign({}, source, {
-                    updated: Date.now(),
-                    error:   true
+                sources = Object.assign({}, sources, {
+                    [action.source]:  Object.assign({}, source, {
+                        updated: Date.now(),
+                        error:   true
+                    })
                 });
             }
 
-            // Add error to stack
-            errors.push({
-                source:   action.source,
-                error:    action.error,
-                status:   action.status,
-                response: action.response
-            });
-
             // Return updated state
             return Object.assign({}, state, {
-                sources: Object.assign({}, state.sources, sources),
-                errors
+                sources,
+                errors:  [
+                    ...state.errors,
+                    {
+                        source:   action.source,
+                        error:    action.error,
+                        status:   action.status,
+                        response: action.response
+                    }
+                ]
             });
         }
 
@@ -108,8 +85,8 @@ module.exports = (state = {
             });
         }
 
-        // Remove errors
-        case Constants.Actions.REMOVE_ERRORS:
+        // Reset errors
+        case Constants.Actions.RESET_ERRORS:
             return Object.assign({}, state, {
                 errors: []
             });

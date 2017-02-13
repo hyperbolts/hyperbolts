@@ -1,5 +1,4 @@
 const Constants    = require('../Constants');
-const Hyper        = require('../..');
 const Utilities    = require('../Utilities');
 const addError     = require('./addError');
 const receiveState = require('./receiveState');
@@ -67,6 +66,8 @@ module.exports = source => dispatch => {
             // been redirected. Change the window location to
             // the response location.
             if (Utilities.parseUrl(url) !== Utilities.parseUrl(source)) {
+                const Hyper = require('../..');
+
                 Hyper.store.stateRedirectCallback(url, response);
                 throw new Error('redirect');
             }
