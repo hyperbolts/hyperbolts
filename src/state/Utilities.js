@@ -41,6 +41,7 @@ const getSources = component => {
             require('..').uri,
             params,
             query,
+            component.props,
             component.instance
         )
     );
@@ -185,7 +186,6 @@ const parseSources = (component, sources, original = []) => {
                 cache = match.transform(
                     cache,
                     key => component.getData(sources.concat(original), key),
-                    component.props,
                     component.instance
                 );
             }
