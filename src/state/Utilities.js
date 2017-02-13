@@ -174,7 +174,7 @@ const parseSources = (component, sources, original = []) => {
             }
 
             // Retrieve cache from store
-            let cache = Store.getCachedState(match.source);
+            const cache = Store.getCachedState(match.source);
 
             // If we have no valid cache, don't include in filtered array
             if (cache === undefined || cache.loading === true || cache.error === true) {
@@ -183,7 +183,7 @@ const parseSources = (component, sources, original = []) => {
 
             // Transform data
             if (match.transform !== undefined) {
-                cache = match.transform(
+                cache.state = match.transform(
                     cache.state,
                     key => component.getData(sources.concat(original), key),
                     component.props,
