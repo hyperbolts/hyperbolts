@@ -27,7 +27,9 @@ module.exports = class {
     constructor() {
         this.config = {
             reducers:              [reducer],
-            stateRedirectCallback: url => window.location.href = url
+            stateRedirectCallback: url => {
+                window.location.href = url;
+            }
         };
     }
 

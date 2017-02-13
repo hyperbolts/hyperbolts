@@ -45,14 +45,14 @@ module.exports = (state = {
 
         // Error state
         case Constants.Actions.ADD_ERROR: {
-            let sources  = state.sources;
-            const source = sources[action.source];
+            let {sources} = state;
+            const source  = sources[action.source];
 
             // If source exists, rebuild sources
             // with error flag set to true
             if (source !== undefined) {
                 sources = Object.assign({}, sources, {
-                    [action.source]:  Object.assign({}, source, {
+                    [action.source]: Object.assign({}, source, {
                         updated: Date.now(),
                         error:   true
                     })
@@ -62,7 +62,7 @@ module.exports = (state = {
             // Return updated state
             return Object.assign({}, state, {
                 sources,
-                errors:  [
+                errors: [
                     ...state.errors,
                     {
                         source:   action.source,

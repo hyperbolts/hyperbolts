@@ -89,7 +89,7 @@ module.exports = class Core {
 
             // Loop through object and prototypes
             for (obj of [mixin, mixin.prototype]) {
-                const skip  = ['bootstrap', 'constructor', 'length' , 'name', 'prototype'];
+                const skip  = ['bootstrap', 'constructor', 'length', 'name', 'prototype'];
                 const keys  = Reflect.ownKeys(obj);
                 let key;
 
