@@ -156,7 +156,7 @@ const parseSources = (component, sources, original = []) => {
         // Attempt to retrieve dependant data
         for (required of requires) {
             const match = sources
-                .concat(original)
+                .concat(original, additional)
                 .find(source => {
 
                     // If required is null, we should be searching
