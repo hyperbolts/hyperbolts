@@ -191,7 +191,7 @@ const parseSources = (component, sources, original = []) => {
                 );
             }
 
-            data.push(cache);
+            data.push(cache.state);
         }
 
         // Retrieve parsed sources
