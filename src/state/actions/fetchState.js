@@ -19,6 +19,7 @@ const requests = {};
 
 // Export action
 module.exports = source => dispatch => {
+    const Hyper = require('../..');
     let errorResponse, status;
 
     // Skip if request is ongoing
@@ -32,9 +33,7 @@ module.exports = source => dispatch => {
 
     // Fetch source
     dispatch(requestState(source));
-    requests[source] = fetch(source + identifier, {
-        credentials: 'include'
-    })
+    requests[source] = fetch(source + identifier, Hyper.store.headers)
 
         // Check for redirection
         .then(response => {
@@ -66,8 +65,6 @@ module.exports = source => dispatch => {
             // been redirected. Change the window location to
             // the response location.
             if (Utilities.parseUrl(url) !== Utilities.parseUrl(source)) {
-                const Hyper = require('../..');
-
                 Hyper.store.stateRedirectCallback(url, response);
                 throw new Error('redirect');
             }

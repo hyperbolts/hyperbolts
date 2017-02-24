@@ -26,7 +26,14 @@ module.exports = class {
      */
     constructor() {
         this.config = {
-            reducers:              [reducer],
+            reducers: [reducer],
+
+            // Headers
+            headers: {
+                credentials: 'include'
+            },
+
+            // Handle redirect
             stateRedirectCallback: url => {
                 window.location.href = url;
             }
@@ -63,6 +70,25 @@ module.exports = class {
 
         // Return cache
         return cache;
+    }
+
+    /**
+     * Get headers to use for requests.
+     *
+     * @return {object} headers
+     */
+    get headers() {
+        return this.config.headers;
+    }
+
+    /**
+     * Set headers to use for requests.
+     *
+     * @param  {object} headers headers
+     * @return {void}
+     */
+    set headers(headers) {
+        this.config.headers = headers;
     }
 
     /**
