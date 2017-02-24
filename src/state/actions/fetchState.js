@@ -19,7 +19,8 @@ const requests = {};
 
 // Export action
 module.exports = source => dispatch => {
-    const Hyper = require('../..');
+    const Hyper    = require('../..');
+    let identifier = Hyper.store.fetchIndentifier || '';
     let errorResponse, status;
 
     // Skip if request is ongoing
@@ -29,7 +30,9 @@ module.exports = source => dispatch => {
     }
 
     // Parse identifier to add to source
-    const identifier = source.indexOf('?') === -1 ? '?hyper' : '&hyper';
+    if (identifier !== '') {
+        identifier = `${source.indexOf('?') === -1 ? '?' : '&'}${identifier}`;
+    }
 
     // Fetch source
     dispatch(requestState(source));
@@ -59,7 +62,7 @@ module.exports = source => dispatch => {
             }
 
             // Remove identifier from source
-            url = url.substr(0, url.length - 6);
+            url = url.substr(0, url.length - identifier.length);
 
             // If source and response do not match, we must have
             // been redirected. Change the window location to

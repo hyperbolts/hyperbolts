@@ -26,7 +26,8 @@ module.exports = class {
      */
     constructor() {
         this.config = {
-            reducers: [reducer],
+            fetchIdentifier: 'hyper',
+            reducers:        [reducer],
 
             // Fetch options
             fetchOptions: {
@@ -70,6 +71,25 @@ module.exports = class {
 
         // Return cache
         return cache;
+    }
+
+    /**
+     * Get fetch identifier to use for requests.
+     *
+     * @return {object} identifier
+     */
+    get fetchIdentifier() {
+        return this.config.fetchIdentifier;
+    }
+
+    /**
+     * Set fetch identifier to use for requests.
+     *
+     * @param  {object} fetchIdentifier fetch identifier
+     * @return {void}
+     */
+    set fetchIdentifier(fetchIdentifier) {
+        this.config.fetchIdentifier = fetchIdentifier;
     }
 
     /**
