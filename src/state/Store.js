@@ -28,8 +28,8 @@ module.exports = class {
         this.config = {
             reducers: [reducer],
 
-            // Headers
-            headers: {
+            // Fetch options
+            fetchOptions: {
                 credentials: 'include'
             },
 
@@ -73,22 +73,22 @@ module.exports = class {
     }
 
     /**
-     * Get headers to use for requests.
+     * Get fetch options to use for requests.
      *
      * @return {object} headers
      */
-    get headers() {
-        return this.config.headers;
+    get fetchOptions() {
+        return this.config.fetchOptions;
     }
 
     /**
-     * Set headers to use for requests.
+     * Set fetch options to use for requests.
      *
-     * @param  {object} headers headers
+     * @param  {object} fetchOptions fetch options
      * @return {void}
      */
-    set headers(headers) {
-        this.config.headers = headers;
+    set fetchOptions(fetchOptions) {
+        this.config.fetchOptions = fetchOptions;
     }
 
     /**

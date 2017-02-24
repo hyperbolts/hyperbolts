@@ -33,7 +33,7 @@ module.exports = source => dispatch => {
 
     // Fetch source
     dispatch(requestState(source));
-    requests[source] = fetch(source + identifier, Hyper.store.headers)
+    requests[source] = fetch(source + identifier, Hyper.store.fetchOptions)
 
         // Check for redirection
         .then(response => {
