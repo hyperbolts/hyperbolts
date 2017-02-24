@@ -93,11 +93,6 @@ module.exports = class Core {
                 const keys = Reflect.ownKeys(obj);
                 let key;
 
-                // Run bootstrap method
-                if (obj.bootstrap !== undefined) {
-                    obj.bootstrap.call(this);
-                }
-
                 // Loop through keys
                 for (key of keys) {
 
@@ -112,6 +107,11 @@ module.exports = class Core {
                         key,
                         Object.getOwnPropertyDescriptor(obj, key)
                     );
+                }
+
+                // Run bootstrap method
+                if (obj.bootstrap !== undefined) {
+                    obj.bootstrap.call(this);
                 }
             }
         }
