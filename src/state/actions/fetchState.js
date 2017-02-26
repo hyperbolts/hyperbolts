@@ -101,7 +101,7 @@ module.exports = source => dispatch => {
             // If we are receiving data we should not be
             // catching this error, so throw again
             if (receiving === true) {
-                throw new Error(err);
+                throw err;
             }
 
             // If we are processing a redirect, this is
