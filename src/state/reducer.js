@@ -93,10 +93,10 @@ module.exports = (state = {
 
         // Reset store
         case Constants.Actions.RESET_STORE:
-            return {
+            return Object.assign({}, state, {
                 sources: {},
                 errors:  []
-            };
+            });
 
         // No matching action
         default:
