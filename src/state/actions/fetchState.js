@@ -21,6 +21,7 @@ const requests = {};
 module.exports = source => dispatch => {
     const Hyper    = require('../..');
     let identifier = Hyper.store.fetchIndentifier || '';
+    let receiving  = false;
     let errorResponse, status;
 
     // Skip if request is ongoing
@@ -89,12 +90,19 @@ module.exports = source => dispatch => {
             }
 
             // Pass to store
+            receiving = true;
             dispatch(receiveState(source, state));
         })
 
         // Catch any errors
         .catch(err => {
             let error = Constants.Exceptions.ERROR_UNKNOWN;
+
+            // If we are receiving data we should not be
+            // catching this error, so throw again
+            if (receiving === true) {
+                throw new Error(err);
+            }
 
             // If we are processing a redirect, this is
             // expected and not an error
