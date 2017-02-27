@@ -135,6 +135,7 @@ module.exports = (sources, Component) => {
 
             // Load state
             Store.loadState(load);
+            this.updateState(parsed);
         }
 
         // Return sources
