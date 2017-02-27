@@ -151,7 +151,7 @@ const parseSources = (component, sources, original = []) => {
         }
 
         // Make sure requirements are an array
-        const requires = [].concat(config.requires || config.required);
+        const requires = [].concat(config.requires || config.require);
 
         // Attempt to retrieve dependant data
         for (required of requires) {
