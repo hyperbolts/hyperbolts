@@ -146,7 +146,7 @@ const parseSources = (component, sources, original = []) => {
 
         // If we aren't processing a dependant data source, include
         // in filtered array
-        if (config.requires === undefined && config.required === undefined) {
+        if (config.requires === undefined && config.require === undefined) {
             return true;
         }
 
