@@ -288,10 +288,10 @@ module.exports = (sources, Component) => {
 
         // Render component
         render() {
-            return React.createElement(Component, Object.assign({
+            return React.createElement(Component, Object.assign({}, this.props, {
                 ref:  this.handleMount.bind(this),
                 data: this.state
-            }, this.props));
+            });
         }
     };
 };
