@@ -29,6 +29,7 @@ const getListeningComponents = () => mounted;
  * @return {array}            sources
  */
 const getSources = component => {
+    const Hyper    = require('..');
     const props    = component.props || {};
     const location = props.location || {};
     const params   = props.params || {};
@@ -38,7 +39,7 @@ const getSources = component => {
     const sources = parseSources(
         component,
         component.getSources(
-            require('..').uri,
+            Hyper.uri,
             params,
             query,
             component.props,
@@ -46,15 +47,14 @@ const getSources = component => {
         )
     );
 
-    // Loop through sources, replacing params
-    // and adding query string if configured
+    // Loop through sources, replacing params,
+    // adding query string and running source
+    // transformer
     return sources.map(config => {
         let key;
 
         // Replace params in source
         for (key in params) {
-
-            // Skip if prototyped property
             if (Object.prototype.hasOwnProperty.call(params, key) === false) {
                 continue;
             }
@@ -69,8 +69,6 @@ const getSources = component => {
 
             // Loop through queries
             for (key in query) {
-
-                // Skip if prototyped property
                 if (Object.prototype.hasOwnProperty.call(query, key) === false) {
                     continue;
                 }
@@ -86,8 +84,15 @@ const getSources = component => {
             }
         }
 
-        // Return config
-        return config;
+        // Run through source transformer and return
+        return Hyper.store.sourceTransformer(
+            config,
+            Hyper.uri,
+            params,
+            query,
+            component.props,
+            component.instance
+        );
     });
 };
 

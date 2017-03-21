@@ -24,7 +24,7 @@ module.exports = {
     // Exceptions
     Exceptions: {
         ERROR_403: 'We don\'t have access to the requested data.',
-        ERROR_404: 'We couldn\'t find the data we were looking for.',
+        ERROR_404: 'We couldn\'t find the data you were looking for.',
 
         // eslint-disable-next-line max-len
         ERROR_UNKNOWN: 'Something went wrong when retrieving data. Please try refreshing or contact us if the problem persists.'

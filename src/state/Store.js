@@ -34,6 +34,9 @@ module.exports = class {
                 credentials: 'include'
             },
 
+            // Source transformer
+            sourceTransformer: config => config,
+
             // Handle redirect
             stateRedirectCallback: url => {
                 window.location.href = url;
@@ -109,6 +112,25 @@ module.exports = class {
      */
     set fetchOptions(fetchOptions) {
         this.config.fetchOptions = fetchOptions;
+    }
+
+    /**
+     * Get source transformer.
+     *
+     * @return {func} transformer
+     */
+    get sourceTransformer() {
+        return this.config.sourceTransformer;
+    }
+
+    /**
+     * Set source transformer.
+     *
+     * @param  {func} transformer transformer
+     * @return {void}
+     */
+    set sourceTransformer(transformer) {
+        this.config.sourceTransformer = transformer;
     }
 
     /**
