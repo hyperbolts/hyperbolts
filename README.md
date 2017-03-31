@@ -1,18 +1,26 @@
 # HyperBolts
-Part of the [HyperBolts](https://hyperbolts.io) family, developed by [Pace IT](https://www.paceit.co.uk). Contact us for bespoke development and commercial support options.
+**Part of the [HyperBolts](https://hyperbolts.io) family, developed by [Pace IT](https://www.paceit.co.uk). Contact us for bespoke development, consultancy and commercial support options.**
+
+**Looking for a new role working with cutting edge tools and technologies? [We're hiring!](https://www.paceit.co.uk/contact/developer-jobs)**
 
 ## Summary
-Pre-release, full readme coming soon.
+Hyperbolts is an opinionated framework for building react-based applications. We handle the routing, API connections and bundling, leaving you to focus on the important development. A full development environment is also available, using:
 
-## Reference
-- [Connect()](docs/connect.md)
+- [Hyperbolts Compiler](https://www.npmjs.com/package/hyperbolts-compiler) - A robust development environment with a local webserver, synchronised browser testing, ES6 to ES5 transpiling and more
+- [Linter](https://www.npmjs.com/package/eslint-config-hyperbolts) - optionally use to enforce coding standards and improve the quality of development
+
+## Quickstart
+Ready to dive in? Head over to our [starter kit](https://github.com/hyperbolts/starter) and follow the step-by-step tutorial.
+
+## References
+- [Connecting to Sources](docs/connect.md)
 - [Source definitions](docs/sources.md)
 - [Rendering data](docs/rendering.md)
 
 ## License
 The MIT License (MIT)
 
-Copyright © 2015-present Pace IT Systems Ltd
+Copyright © 2015-present Pace IT Systems Ltd.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

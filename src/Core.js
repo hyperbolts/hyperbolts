@@ -25,20 +25,19 @@ module.exports = class Core {
      * @return {void}
      */
     constructor() {
-        const that = this;
-
-        // Set default config
         this.config = {
+            mount:  document.getElementById('__react_mount'),
             scroll: true,
+            store:  new Store(),
 
             // Function called when router updates its
             // state in response to URL changes
-            routerUpdateCallback() {
-                that.store.dispatch(transition());
+            routerUpdateCallback: () => {
+                this.store.dispatch(transition());
 
                 // Unless we have been told not to,
                 // scoll to top of window
-                if (that.config.scroll === true) {
+                if (this.config.scroll === true) {
                     window.scroll(0, 0);
                 }
 
@@ -46,7 +45,7 @@ module.exports = class Core {
                 // for one transition, so re-enable
                 // scrolling
                 else {
-                    that.config.scroll = true;
+                    this.config.scroll = true;
                 }
             }
         };
@@ -153,13 +152,6 @@ module.exports = class Core {
      * @return {void}
      */
     run() {
-
-        // If we don't have a mount point set, use default
-        if (this.config.mount === undefined) {
-            this.config.mount = document.getElementById('__react_mount');
-        }
-
-        // Create element
         const element = React.createElement(Router, {
             onUpdate: this.config.routerUpdateCallback,
             history
@@ -175,10 +167,6 @@ module.exports = class Core {
      * @return {object} store
      */
     get store() {
-        if (this.config.store === undefined) {
-            this.config.store = new Store();
-        }
-
         return this.config.store;
     }
 
