@@ -216,6 +216,41 @@ module.exports = class {
     }
 
     /**
+     * Resolve a source and pass to promise.
+     *
+     * @param  {string} source source
+     * @return {Promise}       promise
+     */
+    resolve(source) {
+        return new Promise(resolve => {
+            const cache = this.getCachedState(source) || {};
+
+            // If we have cache, resolve
+            if (cache.loading === false) {
+                resolve(cache);
+                return;
+            }
+
+            // Subscribe to store and listen for endpoint source
+            const unsubscribe = this.subscribe(() => {
+                const state = this.getCachedState(source) || {};
+
+                // Skip if source is not loaded
+                if (state.loading !== false) {
+                    return;
+                }
+
+                // Unsubscribe from store and resolve
+                unsubscribe();
+                resolve(state);
+            });
+
+            // Trigger load
+            this.loadState(source);
+        });
+    }
+
+    /**
      * Update store with source state. Can pass keyed object or
      * source and state seperately.
      *
