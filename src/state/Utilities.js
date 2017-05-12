@@ -29,19 +29,15 @@ const getListeningComponents = () => mounted;
  * @return {array}            sources
  */
 const getSources = component => {
-    const Hyper    = require('..');
-    const props    = component.props || {};
-    const location = props.location || {};
-    const params   = props.params || {};
-    const query    = location.query || {};
+    const Hyper = require('..');
 
     // Return parsed sources
     const sources = parseSources(
         component,
         component.getSources(
             Hyper.uri,
-            params,
-            query,
+            Hyper.routeParams,
+            Hyper.routeQuery,
             component.props,
             component.instance
         )

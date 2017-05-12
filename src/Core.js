@@ -1,11 +1,13 @@
-const connect    = require('./state/connect');
-const history    = require('react-router/lib/browserHistory');
-const React      = require('react');
-const {render}   = require('react-dom');
-const Router     = require('react-router/lib/Router');
-const Store      = require('./state/Store');
-const transition = require('./state/actions/transition');
-const Utilities  = require('./state/Utilities');
+const connect       = require('./state/connect');
+const history       = require('react-router/lib/browserHistory');
+const React         = require('react');
+const {render}      = require('react-dom');
+const Route         = require('react-router/lib/Route');
+const Router        = require('react-router/lib/Router');
+const RouterContext = require('react-router/lib/RouterContext');
+const Store         = require('./state/Store');
+const transition    = require('./state/actions/transition');
+const Utilities     = require('./state/Utilities');
 
 /**
  * HyperBolts ϟ (https://hyperbolts.io)
@@ -26,9 +28,11 @@ module.exports = class Core {
      */
     constructor() {
         this.config = {
-            mount:  document.getElementById('__react_mount'),
-            scroll: true,
-            store:  new Store(),
+            mount:       document.getElementById('__react_mount'),
+            routeParams: {},
+            routeQuery:  {},
+            scroll:      true,
+            store:       new Store(),
 
             // Function called when router updates its
             // state in response to URL changes
@@ -127,6 +131,24 @@ module.exports = class Core {
     }
 
     /**
+     * Get route params.
+     *
+     * @return {object}
+     */
+    get routeParams() {
+        return this.config.routeParams;
+    }
+
+    /**
+     * Get route query.
+     *
+     * @return {object}
+     */
+    get routeQuery() {
+        return this.config.routeQuery;
+    }
+
+    /**
      * Set callback to run when route has changed.
      *
      * @param  {func} callback callback
@@ -154,6 +176,13 @@ module.exports = class Core {
     run() {
         const element = React.createElement(Router, {
             onUpdate: this.config.routerUpdateCallback,
+            render:   props => {
+                this.config.routeQuery = props.location.query;
+                this.config.routeParams = props.params;
+
+                // Render route
+                return React.createElement(RouterContext, props);
+            },
             history
         }, this.config.routes);
 
