@@ -11,7 +11,7 @@ const Utilities = require('../Utilities');
  * @license MIT
  */
 
-module.exports = (source) => ({
+module.exports = source => ({
     type:   Constants.Actions.REMOVE_STATE,
-    source: Utilities.sanitizeSource(source),
+    source: Utilities.sanitizeSource(source)
 });

@@ -1,5 +1,4 @@
 const React                 = require('react');
-const Route                 = require('react-router/lib/Route');
 const Router                = require('react-router/lib/Router');
 const RouterContext         = require('react-router/lib/RouterContext');
 const Store                 = require('./state/Store');
@@ -133,7 +132,7 @@ module.exports = class Core {
     /**
      * Get route params.
      *
-     * @return {object}
+     * @return {object} route params
      */
     get routeParams() {
         return this.config.routeParams;
@@ -142,7 +141,7 @@ module.exports = class Core {
     /**
      * Get route query.
      *
-     * @return {object}
+     * @return {object} route query
      */
     get routeQuery() {
         return this.config.routeQuery;

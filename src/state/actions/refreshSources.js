@@ -1,4 +1,3 @@
-const Constants             = require('../Constants');
 const fetchListeningSources = require('./fetchListeningSources');
 const removeState           = require('./removeState');
 const Utilities             = require('../Utilities');

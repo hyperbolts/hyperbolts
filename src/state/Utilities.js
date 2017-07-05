@@ -30,19 +30,19 @@ const getListeningComponents = () => mounted;
  */
 const getListeningSources = () => {
     const sources = [];
-    let uuid;
+    let id;
 
     // Loop through mounted components
-    for (uuid in mounted) {
+    for (id in mounted) {
         let config;
 
         // Skip prototyped properties
-        if (Object.prototype.hasOwnProperty.call(mounted, uuid) === false) {
+        if (Object.prototype.hasOwnProperty.call(mounted, id) === false) {
             continue;
         }
 
         // Loop through sources
-        for (config of getSources(mounted[uuid])) {
+        for (config of getSources(mounted[id])) {
             const source = sanitizeSource(config.source);
 
             // Skip if we have already stored this source

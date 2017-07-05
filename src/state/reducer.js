@@ -20,7 +20,7 @@ module.exports = (state = {
     switch (action.type) {
 
         // Request state
-        case Constants.Actions.REQUEST_STATE:
+        case Constants.Actions.REQUEST_STATE: {
             const cache = state.sources[action.source] || {};
 
             // If we already have loaded data, dont update
@@ -32,6 +32,7 @@ module.exports = (state = {
 
             action.state = [];
             loading = true;
+        }
 
         // Receive state
         case Constants.Actions.RECEIVE_STATE:
@@ -52,7 +53,7 @@ module.exports = (state = {
             });
 
         // Remove state
-        case Constants.Actions.REMOVE_STATE:
+        case Constants.Actions.REMOVE_STATE: {
             const sources = Object.assign({}, state.sources);
 
             // Remove source and return updated state
@@ -60,6 +61,7 @@ module.exports = (state = {
             return Object.assign({}, state, {
                 sources
             });
+        }
 
         // Error state
         case Constants.Actions.ADD_ERROR: {
