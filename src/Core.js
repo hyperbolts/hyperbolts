@@ -1,13 +1,13 @@
-const connect       = require('./state/connect');
-const history       = require('react-router/lib/browserHistory');
-const React         = require('react');
-const {render}      = require('react-dom');
-const Route         = require('react-router/lib/Route');
-const Router        = require('react-router/lib/Router');
-const RouterContext = require('react-router/lib/RouterContext');
-const Store         = require('./state/Store');
-const transition    = require('./state/actions/transition');
-const Utilities     = require('./state/Utilities');
+const React                 = require('react');
+const Route                 = require('react-router/lib/Route');
+const Router                = require('react-router/lib/Router');
+const RouterContext         = require('react-router/lib/RouterContext');
+const Store                 = require('./state/Store');
+const Utilities             = require('./state/Utilities');
+const connect               = require('./state/connect');
+const fetchListeningSources = require('./state/actions/fetchListeningSources');
+const history               = require('react-router/lib/browserHistory');
+const {render}              = require('react-dom');
 
 /**
  * HyperBolts ϟ (https://hyperbolts.io)
@@ -37,7 +37,7 @@ module.exports = class Core {
             // Function called when router updates its
             // state in response to URL changes
             routerUpdateCallback: () => {
-                this.store.dispatch(transition());
+                this.store.dispatch(fetchListeningSources());
 
                 // Unless we have been told not to,
                 // scoll to top of window

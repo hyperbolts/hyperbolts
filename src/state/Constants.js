@@ -16,9 +16,9 @@ module.exports = {
         RECEIVE_STATE: 'RECEIVE_STATE',
         REQUEST_STATE: 'REQUEST_STATE',
         REMOVE_ERROR:  'REMOVE_ERROR',
+        REMOVE_STATE:  'REMOVE_STATE',
         RESET_ERRORS:  'RESET_ERRORS',
-        RESET_STORE:   'RESET_STORE',
-        TRANSITION:    'TRANSITION'
+        RESET_STORE:   'RESET_STORE'
     },
 
     // Exceptions

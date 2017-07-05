@@ -21,8 +21,16 @@ module.exports = (state = {
 
         // Request state
         case Constants.Actions.REQUEST_STATE:
-            action.state = state.sources[action.source] || {};
-            action.state = action.state.state || [];
+            const cache = state.sources[action.source] || {};
+
+            // If we already have loaded data, dont update
+            // state. This prevents flickering when refreshing
+            // data that is already on screen.
+            if (cache.loading === false) {
+                return state;
+            }
+
+            action.state = [];
             loading = true;
 
         // Receive state
@@ -41,6 +49,16 @@ module.exports = (state = {
                         loading
                     }
                 })
+            });
+
+        // Remove state
+        case Constants.Actions.REMOVE_STATE:
+            const sources = Object.assign({}, state.sources);
+
+            // Remove source and return updated state
+            delete sources[action.source];
+            return Object.assign({}, state, {
+                sources
             });
 
         // Error state

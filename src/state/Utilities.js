@@ -23,6 +23,43 @@ let uuid = 0;
 const getListeningComponents = () => mounted;
 
 /**
+ * Return array of sources used by
+ * listening components.
+ *
+ * @return {array} sources
+ */
+const getListeningSources = () => {
+    const sources = [];
+    let uuid;
+
+    // Loop through mounted components
+    for (uuid in mounted) {
+        let config;
+
+        // Skip prototyped properties
+        if (Object.prototype.hasOwnProperty.call(mounted, uuid) === false) {
+            continue;
+        }
+
+        // Loop through sources
+        for (config of getSources(mounted[uuid])) {
+            const source = sanitizeSource(config.source);
+
+            // Skip if we have already stored this source
+            if (sources.indexOf(source) !== -1) {
+                continue;
+            }
+
+            // Add to sources
+            sources.push(source);
+        }
+    }
+
+    // Return sources
+    return sources;
+};
+
+/**
  * Return array of component source objects.
  *
  * @param  {object} component react component
@@ -319,6 +356,7 @@ const setListeningComponent = component => {
 // Export module
 module.exports = {
     getListeningComponents,
+    getListeningSources,
     getSources,
     isUrl,
     parseSources,

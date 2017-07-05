@@ -1,6 +1,5 @@
-const Constants         = require('../Constants');
-const fetchMissingState = require('./fetchMissingState');
-const Utilities         = require('../Utilities');
+const Constants = require('../Constants');
+const Utilities = require('../Utilities');
 
 /**
  * HyperBolts ϟ (https://hyperbolts.io)
@@ -12,9 +11,10 @@ const Utilities         = require('../Utilities');
  * @license MIT
  */
 
-module.exports = () => dispatch => {
-    const mounted   = Utilities.getListeningComponents();
-    const processed = [];
+module.exports = (force = false) => dispatch => {
+    const mounted = Utilities.getListeningComponents();
+    const Hyper   = require('../..');
+    const sources = [];
     let uuid;
 
     // Loop through mounted components
@@ -26,23 +26,22 @@ module.exports = () => dispatch => {
             continue;
         }
 
-        // Retrieve sources
-        const sources = Utilities.getSources(mounted[uuid]);
-
         // Loop through sources
-        for (config of sources) {
+        for (config of Utilities.getSources(mounted[uuid])) {
             const source = Utilities.sanitizeSource(config.source);
 
-            // Skip if we have already processed this source
-            if (processed.indexOf(source) !== -1) {
+            // Skip if we have already stored this source
+            if (sources.indexOf(source) !== -1) {
                 continue;
             }
 
-            // Fetch missing state
-            processed.push(source);
-            dispatch(fetchMissingState(source));
+            // Add to sources
+            sources.push(source);
         }
     }
+
+    // Trigger load of sources
+    Hyper.store.loadState(sources, force);
 
     // If all state is cached the store will never be updated
     // and therefore all listening components won't get data.
