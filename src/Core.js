@@ -74,6 +74,22 @@ module.exports = class Core {
     }
 
     /**
+     * Output log to console.
+     *
+     * @param  {string} message message
+     * @return {void}
+     */
+    log(message) {
+
+        // eslint-disable-next-line no-console
+        console.log(
+            `%c[ϟ]%c ${message}`,
+            'color: #38a8df',
+            'color: #444'
+        );
+    }
+
+    /**
      * Register one or more mixins, extending the
      * current instance with prototyped properties.
      * Note this allows for a multi-inheritance pattern,
