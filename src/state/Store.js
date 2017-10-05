@@ -26,8 +26,9 @@ module.exports = class {
      */
     constructor() {
         this.config = {
-            fetchIdentifier: 'hyper',
-            reducers:        [reducer],
+            fetchIdentifier:  'hyper',
+            fetchStateAction: undefined,
+            reducers:         [reducer],
 
             // Fetch options
             fetchOptions: {
@@ -112,6 +113,25 @@ module.exports = class {
      */
     set fetchOptions(fetchOptions) {
         this.config.fetchOptions = fetchOptions;
+    }
+
+    /**
+     * Get fetch state action to use for requests.
+     *
+     * @return {func} fetch state action
+     */
+    get fetchStateAction() {
+        return this.config.fetchStateAction;
+    }
+
+    /**
+     * Set fetch state action to use for requests.
+     *
+     * @param  {func} fetchStateAction fetch state action
+     * @return {void}
+     */
+    set fetchStateAction(fetchStateAction) {
+        this.config.fetchStateAction = fetchStateAction;
     }
 
     /**

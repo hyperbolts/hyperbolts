@@ -19,10 +19,19 @@ const requests = {};
 
 // Export action
 module.exports = source => dispatch => {
-    const Hyper    = require('../..');
-    let identifier = Hyper.store.fetchIndentifier || '';
-    let receiving  = false;
+    const Hyper              = require('../..');
+    const Store              = Hyper.store;
+    const {fetchStateAction} = Store;
+    let identifier           = Store.fetchIndentifier || '';
+    let receiving            = false;
     let errorResponse, status;
+
+    // If store has a fetch state action defined,
+    // use this to process instead
+    if (fetchStateAction !== undefined) {
+        dispatch(fetchStateAction(source));
+        return;
+    }
 
     // Skip if request is ongoing
     source = Utilities.sanitizeSource(source);
