@@ -80,7 +80,7 @@ module.exports = class Core {
      *
      * @return {array} history
      */
-    history() {
+    get history() {
         return this.config.history;
     }
 
