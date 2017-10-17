@@ -27,6 +27,7 @@ module.exports = class Core {
      */
     constructor() {
         this.config = {
+            history:     [],
             mount:       document.getElementById('__react_mount'),
             routeParams: {},
             routeQuery:  {},
@@ -37,6 +38,7 @@ module.exports = class Core {
             // state in response to URL changes
             routerUpdateCallback: () => {
                 this.store.dispatch(fetchListeningSources());
+                this.history.push(this.uri);
 
                 // Unless we have been told not to,
                 // scoll to top of window
@@ -71,6 +73,15 @@ module.exports = class Core {
      */
     disableScroll() {
         this.config.scroll = false;
+    }
+
+    /**
+     * Return route history.
+     *
+     * @return {array} history
+     */
+    history() {
+        return this.config.history;
     }
 
     /**
