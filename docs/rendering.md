@@ -1,6 +1,6 @@
 # HyperBolts: Rendering Data
 When your component renders, the data sources it uses can be either already loaded, not loaded yet, or some sources are loaded and some are not. HyperBolts empowers you with the ability to discover these states and code in appropriate UI should you need to.
- 
+
 For each data source linked to your component, HyperBolts attaches some useful extra properties that help you to provide a polished UI.
 
 ## Data source structure
@@ -29,7 +29,7 @@ render() {
 
 ## Rendering examples
 ### Simple render
-Assuming we have two data sources defined, `endPointData` and `secondEndPointData`, the simplest render we could do would be to just output values disregarding any state information. This is possible when defensive coding is used, but would not give a great user experience. 
+Assuming we have two data sources defined, `endPointData` and `secondEndPointData`, the simplest render we could do would be to just output values disregarding any state information. This is possible when defensive coding is used, but would not give a great user experience.
 
 In this example, the user could very well see the length being reported as '0' before the data has loaded, and then suddenly be updated when the data sources finally load.
 
@@ -38,7 +38,7 @@ In this example, the user could very well see the length being reported as '0' b
 render() {
     const endPointData       = this.props.data.endPointData.values || [],
           secondEndPointData = this.props.data.secondEndPointData.values || [];
-    
+
     return (
         <div>
             There are {endPointData.length} row(s) in endPointData, and
@@ -66,7 +66,7 @@ render() {
             </div>
         )
     }
-    
+
     // All data has loaded, so display complete component 
     return (
         <div>
@@ -78,4 +78,4 @@ render() {
 ```
 
 ## Notes
-- The render method may be called when not all data is available yet and so defensive coding is recommended (such as `const data = this.props.data.users.values || [];`) to avoid bugs caused by APIs that have a variable execution time. 
+The render method may be called when not all data is available yet and so defensive coding is recommended (such as `const data = this.props.data.users.values || [];`) to avoid bugs caused by APIs that have a variable execution time.

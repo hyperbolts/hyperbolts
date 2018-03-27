@@ -1,6 +1,6 @@
 # HyperBolts: Source Definitions
 The source definition is very flexible and can be as simple or complicated as you like. This is the place what you tell HyperBolts just how you would like your data to be presented to the render method of your component.
- 
+
 ## Usage
 The simplest way to define sources, which will put the actual data into `this.props` itself and allow you to access the values with `this.props.data.values`:
 
@@ -46,7 +46,7 @@ It is also possible to use a function to define the source value that HyperBolts
     return [
         {
             source: 'api/endPoint.json?test=' + params.test,
-            key:    'endPointData'      
+            key:    'endPointData'
         }
     ]
 }
@@ -96,7 +96,7 @@ More so, if you need to require more than once data source, just make `requires`
 ## Defining related data
 Using requires, you can now define related data and flatten multiple API calls to get the data into a single data set for use in your component.
 
-If you have two endpoints, `api/users.json` and `api/users/<userId>.json`. The first one gives a list of users with their `userId` and `name` only. The second returns details about a specified user, and would include the user's `email`. 
+If you have two endpoints, `api/users.json` and `api/users/<userId>.json`. The first one gives a list of users with their `userId` and `name` only. The second returns details about a specified user, and would include the user's `email`.
 
 We would like HyperBolts to build us a data set for our component that has `userId`, `name` and `email` for each user. And we can accomplish this by defining the data sources as follows:
 
@@ -105,7 +105,7 @@ We would like HyperBolts to build us a data set for our component that has `user
 [
     {
         source: 'api/users.json',
-        
+
         // Give this source a key to it appears in the render 
         // component data set in this.props.data.users - if you don't 
         // specify a key here, it will appear in this.props.data.
@@ -115,26 +115,26 @@ We would like HyperBolts to build us a data set for our component that has `user
         // This data source is dependant on the datasource with 
         // key 'users' - you can if you have multiple datasources 
         // you depend on, just use an array here 
-        requires: 'users', 
-        
+        requires: 'users',
+
         // The required datasources specified above are passed in 
         // as individual parameters to this function
         sources:  users => {
 
             // Set a new source for each user to get the 'user details'
             return users.values.map((user, i) => ({
-            
+
                 // Use the current user row's id value to build the 
                 // 'user details' endpoint url
                 source: `api/users/${user.id}.json`,
-                
+
                 // Give this a key
                 key:    `users.values.${i}.details`
             }))
         }
     }
 ],
-``` 
+```
 
 The data source values passed into the render component will now be available in this.props and will be:
 

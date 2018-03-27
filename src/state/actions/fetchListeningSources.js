@@ -11,8 +11,8 @@ const Utilities = require('../Utilities');
  */
 
 module.exports = (force = false) => dispatch => {
-    const Hyper   = require('../..');
-    const Store   = Hyper.store;
+    const Hyper = require('../..');
+    const Store = Hyper.store;
 
     // Trigger load of listening sources
     Store.loadState(

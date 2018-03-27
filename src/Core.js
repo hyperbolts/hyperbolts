@@ -126,7 +126,7 @@ module.exports = class Core {
                 for (key of keys) {
 
                     // Skip blacklisted keys
-                    if (skip.indexOf(key) !== -1) {
+                    if (skip.includes(key) === true) {
                         continue;
                     }
 

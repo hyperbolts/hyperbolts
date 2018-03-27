@@ -31,7 +31,7 @@ module.exports = (force = false) => dispatch => {
             const source = Utilities.sanitizeSource(config.source);
 
             // Skip if we have already stored this source
-            if (sources.indexOf(source) !== -1) {
+            if (sources.includes(source) === true) {
                 continue;
             }
 

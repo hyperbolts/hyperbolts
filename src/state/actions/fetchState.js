@@ -41,7 +41,7 @@ module.exports = source => dispatch => {
 
     // Parse identifier to add to source
     if (identifier !== '') {
-        identifier = `${source.indexOf('?') === -1 ? '?' : '&'}${identifier}`;
+        identifier = `${source.includes('?') === false ? '?' : '&'}${identifier}`;
     }
 
     // Fetch source

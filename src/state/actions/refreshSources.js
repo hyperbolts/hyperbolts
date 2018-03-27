@@ -31,7 +31,7 @@ module.exports = () => (dispatch, getState) => {
 
         // If source is currently being listened for,
         // do not remove from store
-        if (listening.indexOf(source) !== -1) {
+        if (listening.includes(source) === true) {
             continue;
         }
 

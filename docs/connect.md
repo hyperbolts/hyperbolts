@@ -24,13 +24,13 @@ module.exports = Hyper.connect(
 
     // Define data sources
     [],
-    
+
     // Define component
     class extends React.Component {
-    
+
         // Render component
         render() {
-            
+
         }
     }
 )
@@ -38,7 +38,7 @@ module.exports = Hyper.connect(
 
 Next define the sources that this component will use, in this example we use an API endpoint named `api/users.json` and we want to access this endpoint data in our component as `this.props.data.users`, so we've named it `'users'`:
 
-```        
+```
 [
     {
         source: 'api/users.json',
@@ -69,7 +69,7 @@ module.exports = Hyper.connect(
         // Render component
         render() {
             const data = this.props.data.users.values || [];
-            
+
             return (
                 <div>
                     There are {data.length} users.

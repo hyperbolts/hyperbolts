@@ -46,7 +46,7 @@ const getListeningSources = () => {
             const source = sanitizeSource(config.source);
 
             // Skip if we have already stored this source
-            if (sources.indexOf(source) !== -1) {
+            if (sources.includes(source) === true) {
                 continue;
             }
 
@@ -114,7 +114,7 @@ const getSources = component => {
 
             // If we have some queries, add to source
             if (queries.length !== 0) {
-                config.source += config.source.indexOf('?') === -1 ? '?' : '&';
+                config.source += config.source.includes('?') === false ? '?' : '&';
                 config.source += queries.join('&');
             }
         }
