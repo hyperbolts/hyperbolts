@@ -42,7 +42,8 @@
     "babel-cli": "^6.22.2",
     "babel-preset-latest": "^6.22.0",
     "eslint": "^3.14.1",
-    "eslint-config-hyperbolts": "^1.0.0"
+    "eslint-config-hyperbolts": "^1.0.0",
+    "mocha": "^3.4.2"
   },
   "babel": {
     "presets": [
